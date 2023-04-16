@@ -1,12 +1,13 @@
 import tkinter as tk
 import requests
-from tkinter import messagebox
+from IPython.display import display
+import ipywidgets as widgets
 
 api_key = "1cfca0cea63d4584869144562b207f7d" #api i used from open-exchange-rates
 base_url = f"https://openexchangerates.org/api/latest.json?app_id={api_key}"
 
 root = tk.Tk()
-root.title(" Abdullah Currency Converter")
+root.title("Abdullah Currency Converter")
 
 amount_label = tk.Label(root, text="Amount:", font=("Arial", 14))
 amount_label.grid(row=0, column=0, padx=5, pady=5)
@@ -43,11 +44,14 @@ def convert_currency():
 
         amount = float(amount_entry.get())
         result = amount * (to_rate / from_rate)
-        messagebox.showinfo("Result", f"{result:.2f} {to_currency.get()}")
+        result_label.config(text=f"{result:.2f} {to_currency.get()}")
     except ValueError:
-        messagebox.showerror("Error", "Please enter a valid amount.")
+        result_label.config(text="Please enter a valid amount.")
+
     except:
-        messagebox.showerror("Error", "An error occurred.")
+
+        result_label.config(text="An error occurred.")
+
 
 convert_button = tk.Button(root, text="Convert", command=convert_currency, font=("Arial", 14),
                             bg="#008080", fg="white")
@@ -56,5 +60,11 @@ convert_button.grid(row=3, column=1, padx=5, pady=5, sticky="W")
 reset_button = tk.Button(root, text="Reset", command=lambda: [amount_entry.delete(0, tk.END), from_currency.set("USD"), to_currency.set("USD"), result_label.config(text="")], font=("Arial", 14), bg="#C0C0C0",
                             fg="blue")
 reset_button.grid(row=3, column=1, padx=5, pady=5, sticky="E")
+
+#  display it in the notebook
+result_widget = widgets.Output()
+display(result_widget)
+with result_widget:
+    display(result_label)
 
 root.mainloop()
